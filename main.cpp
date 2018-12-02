@@ -1,11 +1,8 @@
-#include <iostream>
 #include <pso.h>
-
-using namespace std;
 
 int main()
 {
-    cout << "Hello World!" << endl;
+    PSO search;
+
     return 0;
 }
-

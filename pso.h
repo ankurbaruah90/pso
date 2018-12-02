@@ -93,7 +93,8 @@ bool PSO::computeTerminationCondition()
         for (int j = 0; j < swarmSize; j++)
             meanParticles[i] += currentPosition[i][j];
 
-    meanParticles = meanParticles/swarmSize;
+    for (int k = 0; k < dim; k++)
+        meanParticles[k] = meanParticles[k]/swarmSize;
 
     for (int i = 0; i < dim; i++)
         for (int j = 0; j < swarmSize; j++)
@@ -116,8 +117,8 @@ void PSO::getFitness()
 
         /* ---------- Subscribing Fitness ------------- */
 
-        std_msgs::Float32::ConstPtr msg = ros::topic::waitForMessage <std_msgs::Float32> ("/Error", getError);        // subscribe error value
-        currentFitness[i] = abs(msg->data);
+//        std_msgs::Float32::ConstPtr msg = ros::topic::waitForMessage <std_msgs::Float32> ("/Error", getError);        // subscribe error value
+//        currentFitness[i] = abs(msg->data);
 
 
         ///*---------Exterior Penalty - Quadratic Loss Function---------*///
@@ -224,12 +225,4 @@ vector <vector <float> > PSO::getOptimal()
         updateVelocityAndPosition();
     }
     return globalBestPosition;
-}
-
-int main(int argc, char **argv)
-{
-    gsl_rng_env_setup();
-    PSO object;
-    object.getOptimal();
-    return 0;
 }
