@@ -1,12 +1,9 @@
-#include <iostream>
 #include <vector>
 #include <algorithm>
 #include <math.h>
 #include <gsl/gsl_rng.h>
 #include <time.h>
 #include <deque>
-
-using namespace std;
 
 #define V_MAX 0.05                                                              // max particle velocity
 #define w 0.729                                                                 // inertia parameter w
@@ -20,22 +17,22 @@ public:
     struct tm tstruct;
     time_t now;
     const gsl_rng_type *T;
-    gsl_rng * r;
+    gsl_rng *r;
     int swarmSize, iteration, dim, optimalSolution, solutionCount;
     float penalty, globalBestFitnessValue;
     float random1, random2;
-    deque <float> bestGlobalFitnessQueue;
+    std::deque <float> bestGlobalFitnessQueue;
     float terminationThreshold;
     float bestFitness;
     int terminationWindow;
 
-    vector <float> currentFitness, localBestFitness;
-    vector < vector <float> > currentPosition, velocity, localBestPosition, globalBestPosition;
+    std::vector <float> currentFitness, localBestFitness;
+    std::vector < std::vector <float> > currentPosition, velocity, localBestPosition, globalBestPosition;
 
     void getFitness();
     void updateVelocityAndPosition();
     void initialize();
-    vector<vector<float> > getOptimal();
+    std::vector < std::vector <float> > getOptimal();
     bool computeTerminationCondition();
     PSO();
     ~PSO();
@@ -49,7 +46,7 @@ PSO::PSO()
     r = gsl_rng_alloc (T);
     swarmSize = 20;                                                             // size of swarm
     iteration = 10;                                                             // number of iterations
-    dim = 6;                                                                    // dimensions/parameters
+    dim = 3;                                                                    // dimensions/parameters
     penalty = 100;
     globalBestFitnessValue = 10000.0;
 
@@ -119,6 +116,7 @@ void PSO::getFitness()
 
 //        std_msgs::Float32::ConstPtr msg = ros::topic::waitForMessage <std_msgs::Float32> ("/Error", getError);        // subscribe error value
 //        currentFitness[i] = abs(msg->data);
+        currentFitness[i] = gsl_rng_uniform(r);
 
 
         ///*---------Exterior Penalty - Quadratic Loss Function---------*///
@@ -178,13 +176,13 @@ void PSO::initialize()
     localBestPosition = currentPosition;
 }
 
-vector <vector <float> > PSO::getOptimal()
+std::vector < std::vector <float> > PSO::getOptimal()
 {
     initialize();                                                               // Initialize Swarm
     getFitness();                                                               // pass parameters and get fitness
     bool terminationConditionAchieved = false;
     localBestFitness = currentFitness;
-    vector <float>::iterator globalBestFitness = min_element(localBestFitness.begin(), localBestFitness.end());
+    std::vector <float>::iterator globalBestFitness = min_element(localBestFitness.begin(), localBestFitness.end());
     globalBestFitnessValue = localBestFitness[distance(localBestFitness.begin(), globalBestFitness)];
 
     for (int a = 0; a < swarmSize; a++)
@@ -208,7 +206,7 @@ vector <vector <float> > PSO::getOptimal()
             }
         }
 
-        vector <float>::iterator currentGlobalBestFitness = min_element(localBestFitness.begin(), localBestFitness.end());
+        std::vector <float>::iterator currentGlobalBestFitness = min_element(localBestFitness.begin(), localBestFitness.end());
         float currentGlobalBestFitnessValue = localBestFitness[distance(localBestFitness.begin(), currentGlobalBestFitness)];
         if (currentGlobalBestFitnessValue < globalBestFitnessValue)
         {
@@ -218,9 +216,9 @@ vector <vector <float> > PSO::getOptimal()
                     globalBestPosition[b][a] = localBestPosition[b][distance(localBestFitness.begin(), currentGlobalBestFitness)];
         }
 
-        terminationConditionAchieved = computeTerminationCondition();
-        if (terminationConditionAchieved == true)
-            break;
+//        terminationConditionAchieved = computeTerminationCondition();
+//        if (terminationConditionAchieved == true)
+//            break;
 
         updateVelocityAndPosition();
     }
