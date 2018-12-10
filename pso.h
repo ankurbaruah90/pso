@@ -17,6 +17,7 @@
 class PSO
 {
 public:
+//    int penalty = 1;
     const gsl_rng_type *T;
     gsl_rng *r;
     int optimalSolution, solutionCount;
@@ -92,8 +93,8 @@ void PSO::getFitness()
         currentFitness[i] = getScore(candidate_parameters);
 
         ///*---------Exterior Penalty - Quadratic Loss Function---------*///
-        ///----- Add your custom penalty functions here------///
-
+//        for (int k = 0; k < DIM; k++)
+//            currentFitness[i] += penalty*(pow(fmin(0, currentPosition[k][i]),2));
     }
 }
 
@@ -116,6 +117,7 @@ void PSO::updateVelocityAndPosition()
                 velocity[i][j] = fmin(variableVelocity, V_MAX);
 
             currentPosition[i][j] = currentPosition[i][j] + velocity[i][j];
+            /// You can further restrict particle positions here
         }
 }
 
@@ -136,7 +138,7 @@ void PSO::initialize()
         velocity[i].resize(SWARM_SIZE);
         for (int j = 0; j < SWARM_SIZE; j++)
         {
-            currentPosition[i][j] = SPAN * (gsl_rng_uniform(r));      // random initial swarm positions, positive values
+            currentPosition[i][j] = SPAN * (gsl_rng_uniform(r) - 0.5);      // random initial swarm positions, positive values
             velocity[i][j] = 0.05 * (gsl_rng_uniform(r));             // random initial swarm velocities
         }
     }
