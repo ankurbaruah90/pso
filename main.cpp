@@ -28,7 +28,7 @@ int main()
 {
     now = time(0);
     tstruct = *localtime(&now);
-    strftime(plot, sizeof(plot), "/home/ankur/Desktop/pso/log/PSO-SVM-%Y-%m-%d-%H-%M-%S", &tstruct);
+    strftime(plot, sizeof(plot), "/home/ankur/Desktop/qt_dev/pso/log/PSO-SVM-%Y-%m-%d-%H-%M-%S", &tstruct);
     strcat(plot, ".csv");
 
     PSO search;
